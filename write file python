@@ -1,0 +1,12 @@
+file1 = open("Curvature1.txt","a")
+text_to_file1=[]
+for i in range (0,len(Curvature1)):
+    text_to_file1.append([str(x)+'\t' for x in Curvature1[i]])
+    text_to_file1[i].append('\n')
+    #text_to_file1.append([str(i)+'\t'])
+
+
+for i in range (0,len(Curvature1)):
+    file1.writelines(text_to_file1[i]) 
+
+file1.close() 
