@@ -1,0 +1,74 @@
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+title="Hbonds_probaility_ssDNA_total.jpg"
+
+labels = [ 'G', 'T', 'A','C/mC',]
+
+normal_water_positive = get_values_resname(data1_pos)
+normal_salt_positive = get_values_resname(data2_pos)
+met_water_positive = get_values_resname(data3_pos)
+met_salt_positive = get_values_resname(data4_pos)
+
+normal_water_negative = get_values_resname(data1_neg)
+normal_salt_negative = get_values_resname(data2_neg)
+met_water_negative = get_values_resname(data3_neg)
+met_salt_negative = get_values_resname(data4_neg)
+
+
+x = 2.5*np.arange(len(labels))  # the label locations
+width = 0.5  # the width of the bars
+fig, ax = plt.subplots(figsize=(2855/500,2015/500),dpi=100)
+rects1 = ax.bar(x - width*1.5 , normal_water_positive, width, label='unmethylated ssDNA in water')
+rects2 = ax.bar(x - width/2, normal_salt_positive, width, label='unmethylated ssDNA in MgCl$\mathregular{_2}$')
+rects3 = ax.bar(x + width/2, met_water_positive, width, label='methylated ssDNA in water')
+rects4 = ax.bar(x + width*1.5, met_salt_positive, width, label='methylated ssDNA in MgCl$\mathregular{_2}$')
+
+#rects5 = ax.bar(x - width/2 , normal_water_negative, width, )
+#rects6 = ax.bar(x + width/2, normal_salt_negative, width, )
+#rects7 = ax.bar(x - width*1.5, met_water_negative, width,)
+#rects8 = ax.bar(x + width*1.5, met_salt_negative, width, )
+
+print (x)
+# Add some text for labels, title and custom x-axis tick labels, etc.
+ax.set_xlabel('Types of nucleobases',fontsize=textsize,fontname=fonttype)
+ax.set_ylabel('Probability',fontsize=textsize,fontname=fonttype)
+ax.set_xticks(x)
+ax.set_xticklabels(labels,fontsize=textsize-2,fontname=fonttype)
+xlabel=ax.get_xticks().tolist()
+ylabel=ax.get_yticks().tolist()
+ylabel=[round(i,2) for i in ylabel]
+ylabel=[0.0,0.2,0.4,0.6]
+#ylabel=[i for i in range (0,31,5)]
+#ax.fill_between(data1[0], data1[1],0,facecolor='#81DAF5',alpha=0.45)
+ax.set_yticklabels(ylabel,fontsize=textsize-2,fontname=fonttype)
+ax.set_yticks(ylabel)
+
+
+
+#labels=[1,2,3,4,5,6,7,8]
+def autolabel(rects):
+    """Attach a text label above each bar in *rects*, displaying its height."""
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate('{}'.format(''),
+                    xy=(rect.get_x()/2 + rect.get_width()/2 , height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')
+
+
+#autolabel(rects1)
+#autolabel(rects2)
+#autolabel(rects3)
+#autolabel(rects4)
+#autolabel(rects5)
+#autolabel(rects6)
+#autolabel(rects7)
+#autolabel(rects8)
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+mpl.rc('font',family='Arial')
+#plt.legend(fontsize=textsize-5.6,framealpha=0,loc=1) 
+fig.tight_layout()
+plt.savefig(title,dpi=dpisize,format="jpg",transparent=True,bbox_inches='tight')
+plt.show()
