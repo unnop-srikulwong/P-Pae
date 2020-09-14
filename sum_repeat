@@ -1,0 +1,29 @@
+def sum_repeat (A):
+    index=[]
+    data=A.groupby(A.columns.difference(['Frequency_Hbonds']).tolist(), as_index=False).sum()
+    for i in range (0,len(data)):
+        for j in range (0,len(data)):
+            if data[data.columns[0]][i]==data[data.columns[1]][j] and data[data.columns[1]][i]==data[data.columns[0]][j]:
+                if i>j:
+                    break
+                index.append([i,j])
+    #print (data)
+    for i,j in index:
+        #print (i,j)
+        data.at[i, data.columns[2]] = data[data.columns[2]][i]+data[data.columns[2]][j]
+        #data[data.columns[2]][i]=data[data.columns[2]][i]+data[data.columns[2]][j]
+        data=data.drop([j],axis=0)
+    return data.groupby(data.columns.difference(['Frequency_Hbonds']).tolist(), as_index=False).sum()
+    
+def prob_Hbonds(A,B,C,D,E):
+    #read_file
+    data_x=read_xpm_file (A,B,C,D)
+    #delete column in pd.dataFrame
+    data_x.drop(data_x.columns[E], axis=1, inplace=True)
+    data_x=sum_repeat(data_x)
+    data_x=data_x.groupby(data_x.columns.difference(['Frequency_Hbonds']).tolist(), as_index=False).sum()
+    data_x.sort_values('Frequency_Hbonds', axis=0, ascending=True, inplace=False, kind='quicksort', na_position='last')
+    #summation in Frequency Hbonds
+    max_frequency=data_x[data_x.columns[2]].sum(axis = 0, skipna = True) 
+    data_x[data_x.columns[2]]=data_x[data_x.columns[2]].div(max_frequency)
+    return data_x
