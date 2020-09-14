@@ -1,0 +1,49 @@
+def read_xpm_file (A,B,C,D):
+    data=[]
+    with open(A, 'r') as infile:
+        current_lines=0
+        for line in infile:
+            if line=='[ hbonds_GOG-DNA ]\n':
+                current_lines=1
+                continue
+            if current_lines==1:
+                #print (line.split())
+                data.append([int(i)-1 for i in line.split()])
+    count_hydrogenbonds=[]
+    for i in range (0,len(data)):
+        with open(B) as file:
+            dataNEW=file.readlines()[-(i+1)]
+            count_hydrogenbonds.append(dataNEW.count('o'))
+    u = Universe(C,D)
+    atom = u.select_atoms("all")
+    #print (atom[data].indices)
+    index_COOH = atom.select_atoms('resname GOG and type O').indices+1
+    atom_resname = atom[data].resnames
+    atom_resname = np.array(atom_resname)
+    atom_resname = atom_resname.swapaxes(0,1)
+    atom_resname = np.delete(atom_resname,1,0)
+    atom_resname = atom_resname.swapaxes(1,0)
+    atom_index = atom[data].indices
+    atom_index = np.array(atom_index)
+    atom_index = atom_index.swapaxes(0,1)
+    atom_index = np.delete(atom_index,1,0)
+    #print (atom_index)
+    atom_types = atom.types[data]
+    atom_types = np.array(atom_types)
+    atom_types = atom_types.swapaxes(0,1)
+    atom_types = np.delete(atom_types,1,0)
+    data_Hbonds=pd.DataFrame(atom_resname,
+                                columns=['Donor_resname','Acceptor_resname'])
+    data_Hbonds['Donor_Index_No']=atom_index[0]
+    data_Hbonds['Acceptor_Index_No']=atom_index[1]
+    data_Hbonds['Donor_Atomtype']=atom_types[0]
+    data_Hbonds['Acceptor_Atomtype']=atom_types[1]
+    data_Hbonds['Frequency_Hbonds']=count_hydrogenbonds
+    #0:Donor_resname
+    #1:Acceptor_resname
+    #2:Donor_Resid_No
+    #3:Acceptor_Resid_No
+    #4:Donor_Atomtype
+    #5:Acceptor_Atomtype
+    #6:Number_Hbonds
+    return data_Hbonds,index_COOH
